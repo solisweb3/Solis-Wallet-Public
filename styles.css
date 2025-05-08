@@ -1,0 +1,30 @@
+/* Navigation and page structure */
+.nav-buttons {
+    position: absolute;
+    top: 20px;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    width: 100%;
+    z-index: 10;
+}
+
+#walletsGrid, #walletCreation, #walletOverview {
+    background-color: #000000;
+    min-height: 100vh;
+    width: 100%;
+    margin: 0;
+    padding: 280px 20px 20px 20px;
+    box-sizing: border-box;
+    position: fixed;
+    top: 0;
+    left: 0;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Rest of your styles... */
