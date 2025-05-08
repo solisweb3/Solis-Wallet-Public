@@ -64,10 +64,10 @@ This project is currently in development. If you'd like to contribute:
 3. Submit a pull request
 
 ## License
-[Your chosen license]
+Unilicense
 
 ## Contact
-[Your contact information]
+solisweb3@gmail.com
 
 ## Acknowledgments
 - Solana Foundation
