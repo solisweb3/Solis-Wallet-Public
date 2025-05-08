@@ -1,0 +1,1518 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Solis</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@solana/web3.js@latest/lib/index.iife.min.js"></script>
+    <script src="https://bundle.run/bip39@3.0.4"></script>
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        }
+        
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #1B1B1F;
+            color: #FAEBD7;
+            font-weight: 500;
+            padding-top: 100px;
+        }
+
+        .floating-nav {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(42, 42, 42, 0.95);
+            padding: 15px 30px;
+            border-radius: 50px;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            border: 1px solid #3F3F3F;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .nav-link {
+            color: #FAEBD7 !important;
+            padding: 8px 20px !important;
+            margin: 0 5px;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .nav-link:hover {
+            background-color: rgba(250, 235, 215, 0.1);
+        }
+
+        .nav-link.active {
+            background-color: #FAEBD7 !important;
+            color: #000000 !important;
+            font-weight: 600;
+        }
+
+        .dropdown-menu {
+            background-color: rgba(42, 42, 42, 0.95);
+            border: 1px solid #3F3F3F;
+            backdrop-filter: blur(10px);
+            padding: 0.5rem;
+        }
+
+        .dropdown-item {
+            color: #FAEBD7;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+        }
+
+        .dropdown-item:hover {
+            background-color: rgba(250, 235, 215, 0.1);
+            color: #FAEBD7;
+        }
+
+        .landing-page {
+            text-align: center;
+            padding: 60px 20px;
+            display: block;
+            min-height: 100vh;
+        }
+
+        .landing-title {
+            color: #FAEBD7;
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        .landing-subtitle {
+            color: #FAEBD7;
+            font-size: 1.25rem;
+            font-weight: 500;
+            margin-bottom: 2.5rem;
+            opacity: 0.8;
+        }
+
+        .btn {
+            font-weight: 600;
+        }
+
+        .btn-success, .landing-button {
+            background-color: #FAEBD7;
+            border-color: #FAEBD7;
+            color: #000000;
+            font-size: 1.25rem;
+            padding: 1rem 2rem;
+        }
+
+        .btn-success:hover, .landing-button:hover {
+            background-color: #E5D6C2;
+            border-color: #E5D6C2;
+            color: #000000;
+        }
+
+        .card {
+            background-color: #2A2A2A;
+            border: 1px solid #3F3F3F;
+        }
+
+        .alert-warning {
+            background-color: #2A2A2A;
+            border-color: #FF9C2A;
+            color: #FF9C2A;
+        }
+
+        .wallet-name-input {
+            background-color: transparent;
+            border: 1px solid #3F3F3F;
+            border-radius: 5px;
+            color: #FAEBD7;
+            padding: 8px 12px;
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            text-align: center;
+            width: 200px;
+        }
+
+        .wallet-name-input:focus {
+            outline: none;
+            border-color: #FAEBD7;
+        }
+
+        .balance-amount {
+            color: #FAEBD7;
+        }
+
+        strong {
+            color: #FAEBD7;
+        }
+
+        .seed-phrase-container {
+            position: relative;
+            margin: 20px 0;
+            height: 100px;
+            background-color: #1B1B1F;
+            border: 1px solid #3F3F3F;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #seedPhrase {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #FAEBD7;
+            padding: 20px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        #revealButton {
+            position: absolute;
+            z-index: 2;
+            background-color: #FAEBD7;
+            border-color: #FAEBD7;
+            color: #000000;
+            font-weight: 600;
+            padding: 0.5rem 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        #revealButton:hover {
+            background-color: #E5D6C2;
+            border-color: #E5D6C2;
+        }
+
+        .btn-success.created {
+            background-color: rgba(250, 235, 215, 0.2);
+            border-color: #FAEBD7;
+            color: #FAEBD7;
+            cursor: default;
+            pointer-events: none;
+            position: relative;
+            padding-left: 3rem;
+        }
+
+        .btn-success.created::before {
+            content: "✓";
+            position: absolute;
+            left: 1.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.25rem;
+        }
+
+        .wallet-grid {
+            display: none;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .wallet-card {
+            background-color: #2A2A2A;
+            border: 1px solid #3F3F3F;
+            border-radius: 10px;
+            padding: 20px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            cursor: pointer;
+        }
+
+        .wallet-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .wallet-card-name {
+            color: #FAEBD7;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .wallet-card-balance {
+            color: #FAEBD7;
+            font-size: 1.25rem;
+            opacity: 0.8;
+        }
+
+        .nav-item.dropdown:hover .dropdown-menu {
+            display: block;
+        }
+
+        #walletsGrid {
+            display: none;
+        }
+
+        .wallet-grid-container {
+            padding: 20px;
+            display: none;
+        }
+
+        .create-wallet-button {
+            display: block;
+            width: 300px;
+            margin: 0 auto 30px auto;
+            background-color: #FAEBD7;
+            border-color: #FAEBD7;
+            color: #000000;
+            font-weight: 600;
+            font-size: 1.25rem;
+            padding: 1rem;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            text-align: center;
+        }
+
+        .create-wallet-button:hover {
+            background-color: #E5D6C2;
+            border-color: #E5D6C2;
+            transform: translateY(-2px);
+            text-decoration: none;
+            color: #000000;
+        }
+
+        .wallet-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .wallet-card {
+            background-color: #2A2A2A;
+            border: 1px solid #3F3F3F;
+            border-radius: 10px;
+            padding: 20px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            cursor: pointer;
+        }
+
+        .wallet-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .wallet-card-name {
+            color: #FAEBD7;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .wallet-card-balance {
+            color: #FAEBD7;
+            font-size: 1.25rem;
+            opacity: 0.8;
+        }
+
+        .nav-item.wallet-nav {
+            position: relative;
+        }
+
+        .wallet-dropdown {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: rgba(42, 42, 42, 0.95);
+            border: 1px solid #3F3F3F;
+            border-radius: 10px;
+            padding: 0.5rem;
+            min-width: 200px;
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+        }
+
+        .nav-item.wallet-nav:hover .wallet-dropdown {
+            display: block;
+        }
+
+        .wallet-dropdown-item {
+            color: #FAEBD7;
+            padding: 0.5rem 1rem;
+            display: block;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: all 0.2s ease;
+        }
+
+        .wallet-dropdown-item:hover {
+            background-color: rgba(250, 235, 215, 0.1);
+            color: #FAEBD7;
+            text-decoration: none;
+        }
+
+        /* Ensure other main sections have display: none by default */
+        #landingPage, #walletCreation, #walletOverview {
+            display: none;
+        }
+
+        /* Remove dropdown-related styles */
+        .wallet-nav {
+            position: relative;
+        }
+
+        .nav-link {
+            color: #FAEBD7 !important;
+            padding: 8px 20px !important;
+            margin: 0 5px;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .nav-link:hover {
+            background-color: rgba(250, 235, 215, 0.1);
+        }
+
+        .nav-link.active {
+            background-color: #FAEBD7 !important;
+            color: #000000 !important;
+            font-weight: 600;
+        }
+
+        .landing-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            align-items: center;
+            max-width: 300px;
+            margin: 0 auto;
+        }
+
+        .landing-button {
+            width: 100%;
+            background-color: #FAEBD7;
+            border-color: #FAEBD7;
+            color: #000000;
+            font-size: 1.25rem;
+            padding: 1rem 2rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .landing-button:hover {
+            background-color: #E5D6C2;
+            border-color: #E5D6C2;
+            transform: translateY(-2px);
+        }
+
+        .landing-button.secondary {
+            background-color: transparent;
+            border: 2px solid #FAEBD7;
+            color: #FAEBD7;
+        }
+
+        .landing-button.secondary:hover {
+            background-color: rgba(250, 235, 215, 0.1);
+        }
+
+        #generateWallet {
+            background-color: #FAEBD7;
+            border-color: #FAEBD7;
+            color: #000000;
+            font-weight: 600;
+            font-size: 1.25rem;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            outline: none;
+            box-shadow: none;
+        }
+
+        #generateWallet:hover {
+            background-color: #E5D6C2;
+            border-color: #E5D6C2;
+            transform: translateY(-2px);
+        }
+
+        #generateWallet:focus {
+            outline: none;
+            box-shadow: none;
+        }
+
+        #generateWallet.created {
+            background-color: rgba(250, 235, 215, 0.2);
+            border-color: #FAEBD7;
+            color: #FAEBD7;
+            cursor: default;
+            pointer-events: none;
+            position: relative;
+            padding-left: 3rem;
+        }
+
+        #generateWallet.created::before {
+            content: "✓";
+            position: absolute;
+            left: 1.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.25rem;
+        }
+
+        #walletCreation {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        #walletCreation .card {
+            background: none;
+            border: none;
+            box-shadow: none;
+        }
+
+        #walletCreation .card-body {
+            padding: 0;
+        }
+
+        #generateWallet {
+            background-color: #FAEBD7;
+            border-color: #FAEBD7;
+            color: #000000;
+            font-weight: 600;
+            font-size: 1.25rem;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            margin-bottom: 30px;
+        }
+
+        #generateWallet:hover {
+            background-color: #E5D6C2;
+            border-color: #E5D6C2;
+            transform: translateY(-2px);
+        }
+
+        #continueButton {
+            background-color: #FAEBD7;
+            border-color: #FAEBD7;
+            color: #000000;
+            font-weight: 600;
+            font-size: 1.25rem;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+            width: auto;
+            min-width: 200px;
+        }
+
+        #continueButton:hover {
+            background-color: #E5D6C2;
+            border-color: #E5D6C2;
+            transform: translateY(-2px);
+        }
+
+        #continueButton:focus {
+            outline: none;
+            box-shadow: none;
+        }
+
+        .receive-button {
+            background-color: #FAEBD7;
+            border-color: #FAEBD7;
+            color: #000000;
+            font-weight: 600;
+            font-size: 1.25rem;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+            width: auto;
+            min-width: 200px;
+        }
+
+        .receive-button:hover {
+            background-color: #E5D6C2;
+            border-color: #E5D6C2;
+            transform: translateY(-2px);
+        }
+
+        .address-popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #2A2A2A;
+            border: 1px solid #3F3F3F;
+            border-radius: 10px;
+            padding: 30px;
+            z-index: 1000;
+            max-width: 90%;
+            width: 500px;
+            text-align: center;
+        }
+
+        .address-popup h3 {
+            color: #FAEBD7;
+            margin-bottom: 20px;
+        }
+
+        .wallet-address {
+            background-color: #1B1B1F;
+            border: 1px solid #3F3F3F;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 20px 0;
+            word-break: break-all;
+            color: #FAEBD7;
+            font-family: monospace;
+        }
+
+        .copy-button {
+            background-color: #FAEBD7;
+            border: none;
+            color: #000000;
+            padding: 8px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        .copy-button:hover {
+            background-color: #E5D6C2;
+        }
+
+        .popup-backdrop {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+
+        .close-popup {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            color: #FAEBD7;
+            font-size: 24px;
+            cursor: pointer;
+            background: none;
+            border: none;
+        }
+
+        .wallet-name-container {
+            margin: 20px 0;
+            display: none;
+        }
+
+        .wallet-name-label {
+            color: #FAEBD7;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .wallet-name-input {
+            background-color: #1B1B1F;
+            border: 1px solid #3F3F3F;
+            border-radius: 5px;
+            color: #FAEBD7;
+            padding: 8px 12px;
+            font-size: 1.1rem;
+            text-align: center;
+            width: 200px;
+            margin: 0 auto;
+        }
+
+        .wallet-name-input:focus {
+            outline: none;
+            border-color: #FAEBD7;
+        }
+
+        .logout-button {
+            background-color: #FF4444;
+            border: none;
+            color: white;
+            font-weight: 600;
+            font-size: 1.25rem;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            margin-top: 30px;
+            width: auto;
+            min-width: 200px;
+        }
+
+        .logout-button:hover {
+            background-color: #FF0000;
+            transform: translateY(-2px);
+        }
+
+        .confirm-dialog {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #2A2A2A;
+            border: 1px solid #3F3F3F;
+            border-radius: 10px;
+            padding: 30px;
+            z-index: 1000;
+            text-align: center;
+            color: #FAEBD7;
+        }
+
+        .confirm-dialog-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .confirm-dialog button {
+            padding: 8px 20px;
+            border-radius: 5px;
+            font-weight: 600;
+            min-width: 100px;
+        }
+
+        .confirm-yes {
+            background-color: #FF4444;
+            color: white;
+            border: none;
+        }
+
+        .confirm-no {
+            background-color: #FAEBD7;
+            color: black;
+            border: none;
+        }
+
+        .wallet-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .wallet-title {
+            color: #FAEBD7;
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .wallet-name-edit {
+            background-color: transparent;
+            border: none;
+            border-bottom: 2px solid #3F3F3F;
+            color: #FAEBD7;
+            font-size: 2rem;
+            font-weight: 600;
+            text-align: center;
+            width: 100%;
+            max-width: 400px;
+            padding: 5px 10px;
+            transition: all 0.3s ease;
+        }
+
+        .wallet-name-edit:focus {
+            outline: none;
+            border-bottom-color: #FAEBD7;
+        }
+
+        .wallet-name-edit:hover {
+            border-bottom-color: #FAEBD7;
+        }
+
+        .background-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000000;
+            overflow: hidden;
+            z-index: -1;
+        }
+
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .development-warning {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: rgba(220, 53, 69, 0.95);
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 1.1rem;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="background-container">
+        <canvas id="networkCanvas"></canvas>
+    </div>
+
+    <nav class="floating-nav">
+        <div class="nav nav-pills">
+            <a class="nav-link" href="#" onclick="showPage('landingPage')" id="homeLink">Home</a>
+            <a class="nav-link" href="#" onclick="showPage('walletsGrid'); loadSavedWallets();" id="myWalletsLink">My Wallets</a>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <!-- Landing Page -->
+        <div id="landingPage" class="landing-page">
+            <img src="C:\Users\Marlon\Documents\cursor\project3\transpgood5555.png" alt="Solis Logo" style="width: 500px; margin-bottom: 30px;">
+            <h1 class="landing-title">Welcome to Solis</h1>
+            <p class="landing-subtitle">Manage your Solana wallets with ease</p>
+            <div class="landing-buttons">
+                <button class="btn landing-button" id="getStartedButton" onclick="showPage('walletsGrid'); loadSavedWallets();">Get Started</button>
+                <button class="btn landing-button secondary" onclick="showPage('walletCreation')" id="createWalletButton">Create New Wallet</button>
+            </div>
+            
+            <!-- Add warning banner -->
+            <div class="development-warning">
+                ⚠️ WARNING: This site is under development. You can test features like wallet generation, 
+                but DO NOT send any Solana to generated addresses or load real seed phrases.
+            </div>
+        </div>
+
+        <!-- Wallets Grid View -->
+        <div id="walletsGrid" class="wallet-grid-container">
+            <div style="display: flex; justify-content: center; gap: 20px; margin-bottom: 30px;">
+                <a href="#" class="create-wallet-button" onclick="showPage('walletCreation')" id="createNewWalletBtn">Create New Wallet</a>
+                <a href="#" class="create-wallet-button" onclick="showPage('loadWallet')" id="loadExistingWalletBtn">Load Existing Wallet</a>
+            </div>
+            <div class="wallet-grid">
+                <!-- Wallet cards will be dynamically added here -->
+            </div>
+        </div>
+
+        <!-- Wallet Creation Page -->
+        <div id="walletCreation" style="display: none;">
+            <div class="card">
+                <div class="card-body text-center">
+                    <button id="generateWallet" class="btn mb-4">Create</button>
+                    <div id="walletInfo" style="display: none;">
+                        <div class="wallet-name-container" id="creationNameContainer">
+                            <label class="wallet-name-label">Wallet Name</label>
+                            <input type="text" class="wallet-name-input" id="creationWalletName">
+                        </div>
+                        <div class="seed-phrase-container">
+                            <button id="revealButton" class="btn">Reveal Seed Phrase</button>
+                            <div id="seedPhrase"></div>
+                        </div>
+                        <div class="alert alert-warning">
+                            Make sure to save your seed phrase! It won't be shown again.
+                        </div>
+                        <div class="wallet-address-container" style="margin: 20px 0; text-align: center;">
+                            <div style="color: #FAEBD7; margin-bottom: 10px;">Your Wallet Address:</div>
+                            <div class="wallet-address" style="background-color: #1B1B1F; border: 1px solid #3F3F3F; border-radius: 5px; padding: 15px; word-break: break-all; color: #FAEBD7; font-family: monospace;"></div>
+                        </div>
+                        <div class="button-container">
+                            <button id="continueButton" class="btn btn-continue">Continue</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Wallet Overview Page (Individual Wallet View) -->
+        <div id="walletOverview" style="display: none;">
+            <div class="wallet-header">
+                <input type="text" class="wallet-name-edit" id="walletNameEdit">
+            </div>
+            <div class="card">
+                <div class="card-body text-center">
+                    <div class="balance-container">
+                        <div class="balance-label">Balance</div>
+                        <div class="balance-amount">
+                            <span id="solanaBalance" style="font-family: 'Courier New', monospace; font-size: 2rem; letter-spacing: 0.05em;">0</span> SOL
+                        </div>
+                    </div>
+                    <button class="receive-button" onclick="showAddressPopup()">Receive</button>
+                    <button class="logout-button" onclick="showConfirmDialog()">Remove Wallet</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Load Existing Wallet Page (as a separate page, not within grid) -->
+        <div id="loadWallet" style="display: none;">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h3 style="color: #FAEBD7; margin-bottom: 30px;">Load Existing Wallet</h3>
+                    
+                    <div class="form-group" style="margin-bottom: 30px;">
+                        <label for="seedPhraseInput" style="color: #FAEBD7; margin-bottom: 10px; display: block;">Enter Seed Phrase</label>
+                        <textarea 
+                            id="seedPhraseInput" 
+                            class="form-control" 
+                            style="background-color: #1B1B1F; color: #FAEBD7; border: 1px solid #3F3F3F; padding: 15px; min-height: 100px; margin-bottom: 20px;"
+                            placeholder="Enter your 12-word seed phrase"></textarea>
+                    </div>
+
+                    <div class="wallet-name-container" style="display: block;">
+                        <label class="wallet-name-label">Wallet Name</label>
+                        <input type="text" class="wallet-name-input" id="loadWalletName" placeholder="Enter wallet name">
+                    </div>
+
+                    <button id="loadWalletButton" class="btn btn-success" style="margin-top: 30px;">
+                        Load Wallet
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add popup HTML -->
+    <div class="popup-backdrop" id="popupBackdrop"></div>
+    <div class="address-popup" id="addressPopup">
+        <button class="close-popup" onclick="closeAddressPopup()">×</button>
+        <h3>Receive SOL</h3>
+        <p>Your wallet address:</p>
+        <div class="wallet-address" id="walletAddress"></div>
+        <button class="copy-button" onclick="copyAddress()">Copy Address</button>
+    </div>
+
+    <!-- Add confirm dialog -->
+    <div class="popup-backdrop" id="confirmBackdrop"></div>
+    <div class="confirm-dialog" id="confirmDialog">
+        <h3>Remove Wallet</h3>
+        <p>Are you sure you want to remove this wallet?</p>
+        <p style="font-size: 0.9em; color: #FF4444;">This action cannot be undone.</p>
+        <div class="confirm-dialog-buttons">
+            <button class="confirm-no" onclick="closeConfirmDialog()">Cancel</button>
+            <button class="confirm-yes" onclick="confirmLogout()">Remove</button>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let currentKeypair = null;
+        let walletName = "Wallet 1";
+        
+        // Page switching function
+        function showPage(pageId) {
+            // Hide all pages
+            document.getElementById('landingPage').style.display = 'none';
+            document.getElementById('walletCreation').style.display = 'none';
+            document.getElementById('walletOverview').style.display = 'none';
+            document.getElementById('walletsGrid').style.display = 'none';
+            document.getElementById('loadWallet').style.display = 'none';
+
+            // Show requested page
+            document.getElementById(pageId).style.display = 'block';
+
+            // Reset wallet creation if needed
+            if (pageId === 'walletCreation') {
+                const generateButton = document.getElementById('generateWallet');
+                generateButton.classList.remove('created');
+                generateButton.textContent = 'Create';
+                document.getElementById('walletInfo').style.display = 'none';
+            }
+
+            // Update navigation
+            document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+            if (pageId === 'landingPage') {
+                document.getElementById('homeLink').classList.add('active');
+            } else if (pageId === 'walletsGrid') {
+                document.getElementById('myWalletsLink').classList.add('active');
+            }
+        }
+
+        // Add reveal button functionality
+        document.getElementById('revealButton').addEventListener('click', function() {
+            document.getElementById('seedPhrase').style.opacity = '1';
+            this.style.display = 'none';
+        });
+
+        // Function to get next available wallet number
+        function getNextWalletNumber() {
+            const savedWallets = JSON.parse(localStorage.getItem('wallets') || '[]');
+            const usedNumbers = new Set();
+            
+            // Get all numbers from "Wallet X" names
+            savedWallets.forEach(wallet => {
+                if (wallet.name.startsWith('Wallet ')) {
+                    const num = parseInt(wallet.name.split(' ')[1]);
+                    if (!isNaN(num)) {
+                        usedNumbers.add(num);
+                    }
+                }
+            });
+            
+            // Find the first unused number
+            let nextNumber = 1;
+            while (usedNumbers.has(nextNumber)) {
+                nextNumber++;
+            }
+            
+            return nextNumber;
+        }
+
+        // Reset wallet creation state
+        function resetWalletCreation() {
+            const generateButton = document.getElementById('generateWallet');
+            generateButton.classList.remove('created');
+            generateButton.textContent = 'Create';  // Reset to 'Create'
+            document.getElementById('walletInfo').style.display = 'none';
+        }
+
+        // Update generate wallet function
+        document.getElementById('generateWallet').addEventListener('click', async function() {
+            try {
+                currentKeypair = solanaWeb3.Keypair.generate();
+                const mnemonic = window.bip39.generateMnemonic();
+                
+                // Set default wallet name
+                walletName = `Wallet ${getNextWalletNumber()}`;
+                
+                // Update button state
+                this.classList.add('created');
+                this.textContent = 'Created';
+                
+                // Show and set wallet name input
+                const nameContainer = document.getElementById('creationNameContainer');
+                const nameInput = document.getElementById('creationWalletName');
+                nameContainer.style.display = 'block';
+                nameInput.value = walletName;
+                
+                // Add input event listener
+                nameInput.oninput = function() {
+                    const newName = this.value.trim();
+                    if (newName) {
+                        walletName = newName;
+                    }
+                };
+                
+                // Reset and show wallet info
+                document.getElementById('seedPhrase').style.opacity = '0';
+                document.getElementById('seedPhrase').textContent = mnemonic;
+                document.getElementById('revealButton').style.display = 'block';
+                document.getElementById('walletInfo').style.display = 'block';
+                
+                // Display wallet address
+                document.querySelector('.wallet-address').textContent = currentKeypair.publicKey.toString();
+                
+                // Update balance
+                await updateBalance();
+            } catch (error) {
+                console.error('Error generating wallet:', error);
+                alert('Error generating wallet. Please try again.');
+            }
+        });
+
+        // Continue button functionality
+        document.getElementById('continueButton').addEventListener('click', async function() {
+            try {
+                // Get the final wallet name from input
+                const nameInput = document.getElementById('creationWalletName');
+                if (nameInput && nameInput.value.trim()) {
+                    walletName = nameInput.value.trim();
+                }
+
+                // Save wallet first
+                await saveCurrentWallet();
+                
+                // Switch to grid view and refresh
+                showPage('walletsGrid');
+                await loadSavedWallets();
+                
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error saving wallet. Please try again.');
+            }
+        });
+
+        // Update balance function with proper connection
+        async function updateBalance() {
+            try {
+                const connection = new solanaWeb3.Connection(solanaWeb3.clusterApiUrl('devnet'));
+                const balance = await connection.getBalance(currentKeypair.publicKey);
+                const solBalance = (balance / solanaWeb3.LAMPORTS_PER_SOL).toFixed(4);
+                document.getElementById('solanaBalance').textContent = `${solBalance} SOL`;
+                return solBalance;
+            } catch (error) {
+                console.error('Error updating balance:', error);
+                throw error;
+            }
+        }
+
+        // Add function to update all wallet balances
+        async function updateAllWalletBalances() {
+            const connection = new solanaWeb3.Connection(solanaWeb3.clusterApiUrl('devnet'));
+            const savedWallets = JSON.parse(localStorage.getItem('wallets') || '[]');
+            
+            const updatedWallets = await Promise.all(savedWallets.map(async wallet => {
+                try {
+                    const publicKey = new solanaWeb3.PublicKey(wallet.address);
+                    const balance = await connection.getBalance(publicKey);
+                    wallet.balance = (balance / solanaWeb3.LAMPORTS_PER_SOL).toFixed(4);
+                } catch (error) {
+                    console.error('Error fetching balance for wallet:', wallet.name, error);
+                    wallet.balance = '0';
+                }
+                return wallet;
+            }));
+
+            localStorage.setItem('wallets', JSON.stringify(updatedWallets));
+            return updatedWallets;
+        }
+
+        // Update loadSavedWallets to use the latest names
+        async function loadSavedWallets() {
+            try {
+                const savedWallets = JSON.parse(localStorage.getItem('wallets') || '[]');
+                console.log('Loading wallets:', savedWallets.length); // Debug log
+                
+                const walletsGrid = document.querySelector('.wallet-grid');
+                
+                if (savedWallets.length > 0) {
+                    const walletCards = savedWallets.map(wallet => `
+                        <div class="wallet-card">
+                            <div class="wallet-card-name">${wallet.name}</div>
+                            <div class="wallet-card-balance">${wallet.balance} SOL</div>
+                        </div>
+                    `).join('');
+                    
+                    walletsGrid.innerHTML = walletCards;
+                    
+                    // Add click handlers
+                    document.querySelectorAll('.wallet-card').forEach((card, index) => {
+                        card.addEventListener('click', () => loadWallet(savedWallets[index]));
+                    });
+                } else {
+                    walletsGrid.innerHTML = '';
+                }
+            } catch (error) {
+                console.error('Error loading wallets:', error);
+                alert('Error loading wallets. Please refresh the page.');
+            }
+        }
+
+        // Update saveCurrentWallet function
+        async function saveCurrentWallet() {
+            try {
+                const wallets = JSON.parse(localStorage.getItem('wallets') || '[]');
+                const currentBalance = await updateBalance();
+                
+                const walletData = {
+                    name: walletName,
+                    address: currentKeypair.publicKey.toString(),
+                    keypair: {
+                        publicKey: Array.from(currentKeypair.publicKey.toBytes()),
+                        secretKey: Array.from(currentKeypair.secretKey)
+                    },
+                    balance: currentBalance
+                };
+                
+                // Check if wallet already exists
+                const existingIndex = wallets.findIndex(w => w.address === walletData.address);
+                if (existingIndex >= 0) {
+                    wallets[existingIndex] = walletData;
+                } else {
+                    wallets.push(walletData);
+                }
+                
+                localStorage.setItem('wallets', JSON.stringify(wallets));
+                console.log('Wallet saved:', walletData.name); // Debug log
+            } catch (error) {
+                console.error('Error saving wallet:', error);
+                throw error;
+            }
+        }
+
+        // Add periodic balance updates
+        setInterval(async () => {
+            if (document.getElementById('walletsGrid').style.display === 'block') {
+                await loadSavedWallets();
+            }
+        }, 30000); // Update every 30 seconds
+
+        // Update loadWallet function to handle name changes
+        function loadWallet(wallet) {
+            currentKeypair = solanaWeb3.Keypair.fromSecretKey(new Uint8Array(wallet.keypair.secretKey));
+            walletName = wallet.name;
+            
+            // Show wallet overview page
+            showPage('walletOverview');
+            
+            // Update wallet name display
+            const nameInput = document.getElementById('walletNameEdit');
+            nameInput.value = wallet.name;
+            
+            // Add input event listener for name changes
+            nameInput.oninput = async function() {
+                const newName = this.value.trim();
+                if (newName) {
+                    // Update current wallet name
+                    walletName = newName;
+                    
+                    // Update in localStorage
+                    const wallets = JSON.parse(localStorage.getItem('wallets') || '[]');
+                    const walletIndex = wallets.findIndex(w => w.address === wallet.address);
+                    
+                    if (walletIndex !== -1) {
+                        wallets[walletIndex].name = newName;
+                        localStorage.setItem('wallets', JSON.stringify(wallets));
+                        
+                        // Refresh grid view in background
+                        if (document.getElementById('walletsGrid').style.display === 'block') {
+                            loadSavedWallets();
+                        }
+                    }
+                }
+            };
+            
+            // Update balance
+            updateBalance();
+        }
+
+        // Initialize page
+        window.onload = function() {
+            showPage('landingPage');
+        };
+
+        // Add popup functions
+        function showAddressPopup() {
+            document.getElementById('popupBackdrop').style.display = 'block';
+            document.getElementById('addressPopup').style.display = 'block';
+            document.getElementById('walletAddress').textContent = currentKeypair.publicKey.toString();
+        }
+
+        function closeAddressPopup() {
+            document.getElementById('popupBackdrop').style.display = 'none';
+            document.getElementById('addressPopup').style.display = 'none';
+        }
+
+        async function copyAddress() {
+            const address = currentKeypair.publicKey.toString();
+            try {
+                await navigator.clipboard.writeText(address);
+                const copyButton = document.querySelector('.copy-button');
+                copyButton.textContent = 'Copied!';
+                setTimeout(() => {
+                    copyButton.textContent = 'Copy Address';
+                }, 2000);
+            } catch (err) {
+                console.error('Failed to copy address:', err);
+                alert('Failed to copy address. Please try again.');
+            }
+        }
+
+        // Close popup when clicking backdrop
+        document.getElementById('popupBackdrop').addEventListener('click', closeAddressPopup);
+
+        // Add logout functionality
+        function showConfirmDialog() {
+            document.getElementById('confirmBackdrop').style.display = 'block';
+            document.getElementById('confirmDialog').style.display = 'block';
+        }
+
+        function closeConfirmDialog() {
+            document.getElementById('confirmBackdrop').style.display = 'none';
+            document.getElementById('confirmDialog').style.display = 'none';
+        }
+
+        async function confirmLogout() {
+            try {
+                // Get current wallet address
+                const currentAddress = currentKeypair.publicKey.toString();
+                
+                // Get stored wallets
+                const wallets = JSON.parse(localStorage.getItem('wallets') || '[]');
+                
+                // Remove current wallet
+                const updatedWallets = wallets.filter(wallet => wallet.address !== currentAddress);
+                
+                // Update localStorage
+                localStorage.setItem('wallets', JSON.stringify(updatedWallets));
+                
+                // Close dialog
+                closeConfirmDialog();
+                
+                // Return to grid view and refresh
+                showPage('walletsGrid');
+                await loadSavedWallets();
+                
+                // Clear current wallet data
+                currentKeypair = null;
+                walletName = null;
+                
+            } catch (error) {
+                console.error('Error removing wallet:', error);
+                alert('Error removing wallet. Please try again.');
+            }
+        }
+
+        // Close dialog when clicking backdrop
+        document.getElementById('confirmBackdrop').addEventListener('click', closeConfirmDialog);
+
+        // Network background animation
+        const canvas = document.getElementById('networkCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Set canvas size
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        // Get random color from gradient
+        function getRandomGradientColor() {
+            const colors = [
+                [153, 69, 255],    // Purple
+                [0, 183, 255],     // Blue
+                [0, 255, 163]      // Green
+            ];
+            
+            const randomIndex = Math.random();
+            const color1 = colors[Math.floor(randomIndex * (colors.length - 1))];
+            const color2 = colors[Math.ceil(randomIndex * (colors.length - 1))];
+            const mix = (randomIndex * (colors.length - 1)) % 1;
+            
+            return [
+                Math.round(color1[0] * (1 - mix) + color2[0] * mix),
+                Math.round(color1[1] * (1 - mix) + color2[1] * mix),
+                Math.round(color1[2] * (1 - mix) + color2[2] * mix)
+            ];
+        }
+
+        class Connection {
+            constructor(particle1, particle2) {
+                this.particle1 = particle1;
+                this.particle2 = particle2;
+                this.progress = 0;
+                this.speed = 0.03; // Slower for smoother animation
+                this.active = true;
+                this.opacity = 0;
+                this.targetOpacity = 0.15;
+            }
+
+            update() {
+                if (this.active) {
+                    // Smooth progress
+                    this.progress = Math.min(1, this.progress + this.speed);
+                    this.opacity = Math.min(this.targetOpacity, this.opacity + 0.01);
+                } else {
+                    // Smooth fade out
+                    this.opacity = Math.max(0, this.opacity - 0.01);
+                    if (this.opacity === 0) {
+                        this.progress = Math.max(0, this.progress - this.speed);
+                    }
+                }
+                return this.progress > 0 || this.opacity > 0;
+            }
+
+            draw() {
+                const dx = this.particle2.x - this.particle1.x;
+                const dy = this.particle2.y - this.particle1.y;
+                
+                // Calculate end point based on progress
+                const endX = this.particle1.x + dx * this.progress;
+                const endY = this.particle1.y + dy * this.progress;
+                
+                // Draw line with gradient
+                ctx.beginPath();
+                ctx.moveTo(this.particle1.x, this.particle1.y);
+                ctx.lineTo(endX, endY);
+                
+                // Smooth line
+                ctx.lineCap = 'round';
+                ctx.strokeStyle = `rgba(255, 255, 255, ${this.opacity})`;
+                ctx.lineWidth = 1;
+                ctx.stroke();
+            }
+        }
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.vx = (Math.random() - 0.5) * 0.5;
+                this.vy = (Math.random() - 0.5) * 0.5;
+                this.radius = 2;
+                this.signalTime = Math.random() * 200;
+                this.isSignaling = false;
+                this.color = getRandomGradientColor();
+                this.connections = new Map();
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+
+                if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+                if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+
+                if (Math.random() < 0.001) {
+                    this.isSignaling = true;
+                    this.signalTime = 0;
+                }
+
+                if (this.isSignaling) {
+                    this.signalTime++;
+                    if (this.signalTime > 200) {
+                        this.isSignaling = false;
+                    }
+                }
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(${this.color[0]}, ${this.color[1]}, ${this.color[2]}, 0.8)`;
+                ctx.fill();
+            }
+        }
+
+        const particles = Array(100).fill().map(() => new Particle());
+        let connections = new Set();
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Update and draw particles
+            particles.forEach(particle => {
+                particle.update();
+                particle.draw();
+            });
+
+            // Update existing connections
+            connections = new Set(Array.from(connections).filter(conn => {
+                // If either particle is signaling, keep connection active
+                conn.active = conn.particle1.isSignaling || conn.particle2.isSignaling;
+                return conn.update();
+            }));
+
+            // Create new connections
+            particles.forEach(particle => {
+                particles.forEach(otherParticle => {
+                    if (particle === otherParticle) return;
+
+                    const dx = particle.x - otherParticle.x;
+                    const dy = particle.y - otherParticle.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance < 150) {
+                        if (particle.isSignaling || otherParticle.isSignaling) {
+                            // Check if connection already exists
+                            const existingConnection = Array.from(connections).find(
+                                conn => (conn.particle1 === particle && conn.particle2 === otherParticle) ||
+                                      (conn.particle1 === otherParticle && conn.particle2 === particle)
+                            );
+
+                            if (!existingConnection) {
+                                connections.add(new Connection(particle, otherParticle));
+                            }
+                        }
+                    }
+                });
+            });
+
+            // Draw all connections
+            connections.forEach(connection => connection.draw());
+
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+
+        document.getElementById('loadWalletButton').addEventListener('click', async function() {
+            try {
+                const seedPhrase = document.getElementById('seedPhraseInput').value.trim();
+                const walletName = document.getElementById('loadWalletName').value.trim();
+                
+                // Validate inputs
+                if (!seedPhrase) {
+                    alert('Please enter a seed phrase');
+                    return;
+                }
+                
+                if (!walletName) {
+                    alert('Please enter a wallet name');
+                    return;
+                }
+
+                // Validate seed phrase format
+                const words = seedPhrase.split(' ');
+                if (words.length !== 12) {
+                    alert('Please enter a valid 12-word seed phrase');
+                    return;
+                }
+
+                // Validate seed phrase using bip39
+                if (!window.bip39.validateMnemonic(seedPhrase)) {
+                    alert('Invalid seed phrase. Please check your words and try again.');
+                    return;
+                }
+
+                try {
+                    // Generate keypair from seed phrase
+                    const seed = await window.bip39.mnemonicToSeed(seedPhrase);
+                    const keypairBytes = seed.slice(0, 32);
+                    currentKeypair = solanaWeb3.Keypair.fromSeed(keypairBytes);
+                    
+                    // Save wallet data
+                    const walletData = {
+                        name: walletName,
+                        address: currentKeypair.publicKey.toString(),
+                        keypair: {
+                            publicKey: Array.from(currentKeypair.publicKey.toBytes()),
+                            secretKey: Array.from(currentKeypair.secretKey)
+                        },
+                        balance: '0' // Will be updated when grid loads
+                    };
+
+                    // Get existing wallets
+                    const wallets = JSON.parse(localStorage.getItem('wallets') || '[]');
+                    
+                    // Check if wallet already exists
+                    const existingWallet = wallets.find(w => w.address === walletData.address);
+                    if (existingWallet) {
+                        alert('This wallet has already been added');
+                        return;
+                    }
+
+                    // Add new wallet
+                    wallets.push(walletData);
+                    localStorage.setItem('wallets', JSON.stringify(wallets));
+
+                    // Clear input fields
+                    document.getElementById('seedPhraseInput').value = '';
+                    document.getElementById('loadWalletName').value = '';
+
+                    // Switch to grid view and refresh
+                    showPage('walletsGrid');
+                    await loadSavedWallets();
+                    
+                } catch (error) {
+                    console.error('Error processing seed phrase:', error);
+                    alert('Error loading wallet. Please check your seed phrase and try again.');
+                }
+                
+            } catch (error) {
+                console.error('Error loading wallet:', error);
+                alert('Error loading wallet. Please try again.');
+            }
+        });
+    </script>
+</body>
+</html> 
